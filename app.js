@@ -18,9 +18,7 @@ app.use((req, res, _next) => {
           return res.json({ message: "An error occurred on the server" });
         }
       }
-    } catch (e) {
-      // ignore and fall back to original send
-    }
+    } catch (e) {}
     return origSend(body);
   };
   return _next();

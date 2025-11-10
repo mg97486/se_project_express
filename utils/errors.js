@@ -3,6 +3,7 @@ const NotFoundError = require("./errors/NotFoundError");
 const InternalServerError = require("./errors/InternalServerError");
 const ForbiddenError = require("./errors/ForbiddenError");
 
+/* eslint-disable-next-line no-unused-vars */
 function errorHandler(err, req, res, next) {
   if (err && err.statusCode) {
     const message =
