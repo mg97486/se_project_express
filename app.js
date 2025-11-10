@@ -18,9 +18,7 @@ app.use("/", mainRouter);
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  app.listen(PORT, () => {});
 }
 
 app.use((req, res) => {
