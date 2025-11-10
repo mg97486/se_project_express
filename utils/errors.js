@@ -4,8 +4,6 @@ const InternalServerError = require("./errors/InternalServerError");
 const ForbiddenError = require("./errors/ForbiddenError");
 
 function errorHandler(err, req, res, next) {
-  void next;
-
   if (err && err.statusCode) {
     const message =
       err.statusCode === 500 ? "An error occurred on the server" : err.message;
