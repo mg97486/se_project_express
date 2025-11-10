@@ -8,7 +8,7 @@ const { PORT = 3001 } = process.env;
 
 app.use(express.json());
 
-app.use((req, res, next) => {
+app.use((req, res, _next) => {
   const origSend = res.send.bind(res);
   res.send = function sendIntercept(body) {
     try {
@@ -18,15 +18,17 @@ app.use((req, res, next) => {
           return res.json({ message: "An error occurred on the server" });
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      // ignore and fall back to original send
+    }
     return origSend(body);
   };
-  return next();
+  return _next();
 });
 
-app.use((req, res, next) => {
+app.use((req, res, _next) => {
   req.user = { _id: "690fcb2a7e84d558e85aca8d" };
-  next();
+  _next();
 });
 
 app.use("/", mainRouter);
