@@ -9,6 +9,22 @@ const { PORT = 3001 } = process.env;
 app.use(express.json());
 
 app.use((req, res, next) => {
+  const origSend = res.send.bind(res);
+  res.send = function sendIntercept(body) {
+    try {
+      if (res.statusCode >= 400 && typeof body === "string") {
+        const trimmed = body.trim();
+        if (trimmed.startsWith("<")) {
+          return res.json({ message: "An error occurred on the server" });
+        }
+      }
+    } catch (e) {}
+    return origSend(body);
+  };
+  return next();
+});
+
+app.use((req, res, next) => {
   req.user = { _id: "690fcb2a7e84d558e85aca8d" };
   next();
 });
@@ -22,7 +38,7 @@ if (require.main === module) {
 }
 
 app.use((req, res) => {
-  res.status(404).send({ message: "Requested resource not found" });
+  res.status(404).json({ message: "Requested resource not found" });
 });
 
 app.use(errorHandler);
