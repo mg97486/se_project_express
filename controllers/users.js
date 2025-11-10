@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const validator = require("validator");
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -8,14 +9,11 @@ const getUsers = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, avatar } = req.body;
-  const validator = require("validator");
-
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     const err = new Error("Invalid user data");
     err.name = "ValidationError";
     return next(err);
   }
-
   if (avatar && !validator.isURL(avatar)) {
     const err = new Error("Invalid user data");
     err.name = "ValidationError";

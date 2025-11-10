@@ -3,7 +3,9 @@ const {
   BadRequestError,
   NotFoundError,
   InternalServerError,
+  ForbiddenError,
 } = require("../utils/errors");
+const validator = require("validator");
 
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
@@ -27,7 +29,6 @@ const createItem = (req, res, next) => {
     return next(new BadRequestError("Invalid data for creating item"));
   }
 
-  const validator = require("validator");
   if (
     !imageUrl ||
     typeof imageUrl !== "string" ||
@@ -82,9 +83,7 @@ const deleteItem = (req, res, next) => {
     .orFail(() => new NotFoundError("Item not found"))
     .then((item) => {
       if (String(item.owner) !== String(ownerId)) {
-        return next(
-          new InternalServerError("Attempt to delete another user's item")
-        );
+        return next(new ForbiddenError("You can't delete other users' items"));
       }
       return ClothingItem.findByIdAndDelete(id).then(() =>
         res.status(200).send({ message: "Item deleted" })
