@@ -52,28 +52,6 @@ const getItems = (req, res, next) =>
     .then((items) => res.status(200).send(items))
     .catch((err) => next(err || new InternalServerError()));
 
-const updateItem = (req, res, next) => {
-  const { id } = req.params;
-  const { imageUrl } = req.body;
-
-  return ClothingItem.findByIdAndUpdate(
-    id,
-    { $set: { imageUrl } },
-    { new: true, runValidators: true }
-  )
-    .orFail(() => new NotFoundError("Item not found"))
-    .then((item) => res.status(200).send(item))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return next(new BadRequestError("Invalid data for updating item"));
-      }
-      if (err.name === "CastError") {
-        return next(new BadRequestError("Invalid item ID format"));
-      }
-      return next(err);
-    });
-};
-
 const deleteItem = (req, res, next) => {
   const { id } = req.params;
   const ownerId = req.user && req.user._id;
@@ -155,7 +133,7 @@ const getItem = (req, res, next) => {
 module.exports = {
   createItem,
   getItems,
-  updateItem,
+
   deleteItem,
   likeItem,
   unlikeItem,

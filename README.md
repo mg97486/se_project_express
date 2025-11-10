@@ -1,9 +1,32 @@
-# WTWR (What to Wear?): Back End
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
-## Running the Project
-`npm run start` — to launch the server 
+# 🧥 What to Wear — Backend
 
-`npm run dev` — to launch the server with the hot reload feature
+This is the **backend API** for the **What to Wear** application — a weather-based clothing recommendation app.  
+It handles user accounts, clothing item management, and integrates with external weather APIs to suggest appropriate outfits for the day.
 
-### Testing
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+---
+
+## 🌤️ Overview
+
+The backend provides a RESTful API that:
+
+- Manages users and authentication (sign up, log in, profile info)
+- Stores and retrieves clothing items
+- Supports CRUD operations for user-owned items
+- Integrates with a weather API to serve context-aware clothing suggestions
+
+The frontend (React-based) communicates with this API to display personalized recommendations.
+
+---
+
+## 🧩 Tech Stack
+
+| Layer                 | Technology                                    |
+| --------------------- | --------------------------------------------- |
+| Runtime               | Node.js                                       |
+| Framework             | Express.js                                    |
+| Database              | MongoDB (Mongoose ODM)                        |
+| Authentication        | JWT (JSON Web Token)                          |
+| Environment Variables | dotenv                                        |
+| Validation            | celebrate / Joi                               |
+| Error Handling        | Custom middleware                             |
+| Hosting               | (e.g., Render / Vercel / Railway / Localhost) |

@@ -3,8 +3,10 @@ const NotFoundError = require("./errors/NotFoundError");
 const InternalServerError = require("./errors/InternalServerError");
 const ForbiddenError = require("./errors/ForbiddenError");
 
-/* eslint-disable-next-line no-unused-vars */
-function errorHandler(err, req, res, next) {
+const INTERNAL_SERVER_ERROR_CODE = 500;
+const STATUS_CODE_BAD_REQUEST = 400;
+
+function errorHandler(err, req, res, _next) {
   if (err && err.statusCode) {
     const message =
       err.statusCode === 500 ? "An error occurred on the server" : err.message;
@@ -12,14 +14,20 @@ function errorHandler(err, req, res, next) {
   }
 
   if (err && err.name === "ValidationError") {
-    return res.status(400).json({ message: err.message || "Invalid data" });
+    return res
+      .status(STATUS_CODE_BAD_REQUEST)
+      .json({ message: err.message || "Invalid data" });
   }
 
   if (err && err.name === "CastError") {
-    return res.status(400).json({ message: "Invalid id format" });
+    return res
+      .status(STATUS_CODE_BAD_REQUEST)
+      .json({ message: "Invalid id format" });
   }
 
-  return res.status(500).json({ message: "An error occurred on the server" });
+  return res
+    .status(INTERNAL_SERVER_ERROR_CODE)
+    .json({ message: "An error occurred on the server" });
 }
 
 module.exports = {

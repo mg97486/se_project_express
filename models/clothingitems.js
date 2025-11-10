@@ -3,6 +3,8 @@ const validator = require("validator");
 
 const clothingItemSchema = new mongoose.Schema({
   name: {
+    minglength: 2,
+    maxlength: 30,
     type: String,
     required: true,
   },
@@ -24,8 +26,9 @@ const clothingItemSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user", default: [] }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   createdAt: {
+    default: [],
     type: Date,
     default: Date.now,
   },
