@@ -38,9 +38,7 @@ const createItem = (req, res, next) => {
   }
 
   return ClothingItem.create({ name, weather, imageUrl, owner })
-    .then((item) => {
-      return res.status(201).send(item);
-    })
+    .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data for creating item"));
@@ -51,12 +49,8 @@ const createItem = (req, res, next) => {
 
 const getItems = (req, res, next) => {
   return ClothingItem.find({})
-    .then((items) => {
-      return res.status(200).send(items);
-    })
-    .catch((err) => {
-      return next(err || new InternalServerError());
-    });
+    .then((items) => res.status(200).send(items))
+    .catch((err) => next(err || new InternalServerError()));
 };
 
 const updateItem = (req, res, next) => {
@@ -69,9 +63,7 @@ const updateItem = (req, res, next) => {
     { new: true, runValidators: true }
   )
     .orFail(() => new NotFoundError("Item not found"))
-    .then((item) => {
-      return res.status(200).send(item);
-    })
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data for updating item"));
@@ -93,9 +85,9 @@ const deleteItem = (req, res, next) => {
       if (String(item.owner) !== String(ownerId)) {
         return next(new ForbiddenError("You can't delete other users' items"));
       }
-      return ClothingItem.findByIdAndDelete(id).then(() => {
-        return res.status(200).send({ message: "Item deleted" });
-      });
+      return ClothingItem.findByIdAndDelete(id).then(() =>
+        res.status(200).send({ message: "Item deleted" })
+      );
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -115,9 +107,7 @@ const likeItem = (req, res, next) => {
     { new: true }
   )
     .orFail(() => new NotFoundError("Item not found"))
-    .then((item) => {
-      return res.status(200).send(item);
-    })
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID format"));
@@ -136,9 +126,7 @@ const unlikeItem = (req, res, next) => {
     { new: true }
   )
     .orFail(() => new NotFoundError("Item not found"))
-    .then((item) => {
-      return res.status(200).send(item);
-    })
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID format"));
