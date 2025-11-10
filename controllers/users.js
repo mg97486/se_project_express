@@ -1,5 +1,5 @@
-const User = require("../models/user");
 const validator = require("validator");
+const User = require("../models/user");
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -21,8 +21,12 @@ const createUser = (req, res, next) => {
   }
 
   User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => next(err));
+    .then((user) => {
+      return res.status(201).send(user);
+    })
+    .catch((err) => {
+      return next(err);
+    });
 };
 
 const getUser = (req, res, next) => {
@@ -37,7 +41,9 @@ const getUser = (req, res, next) => {
       }
       return res.status(200).send(user);
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      return next(err);
+    });
 };
 
 module.exports = { getUsers, createUser, getUser };
