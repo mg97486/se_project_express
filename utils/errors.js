@@ -3,7 +3,7 @@ const NotFoundError = require("./errors/NotFoundError");
 const InternalServerError = require("./errors/InternalServerError");
 const ForbiddenError = require("./errors/ForbiddenError");
 
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res) {
   if (err && err.statusCode) {
     const message =
       err.statusCode === 500 ? "An error occurred on the server" : err.message;
