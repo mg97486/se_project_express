@@ -1,42 +1,83 @@
 const validator = require("validator");
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const getUsers = (req, res, next) =>
+const { JWT_SECRET = "dev-secret" } = process.env;
+
+// GET ALL USERS
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => next(err));
-
-const createUser = (req, res, next) => {
-  const { name, avatar } = req.body;
-  if (!name || typeof name !== "string" || name.trim().length < 2) {
-    const err = new Error("Invalid user data");
-    err.name = "ValidationError";
-    return next(err);
-  }
-  if (avatar && !validator.isURL(avatar)) {
-    const err = new Error("Invalid user data");
-    err.name = "ValidationError";
-    return next(err);
-  }
-
-  return User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
-const getUser = (req, res, next) => {
-  const { id } = req.params;
-  return User.findById(id)
+// CREATE USER (only email + password required)
+const createUser = async (req, res) => {
+  try {
+    const { email, password, name, avatar } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      name,
+      avatar,
+    });
+
+    res.status(201).json({
+      message: "User created",
+      userId: user._id,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Email already exists." });
+    }
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findUserByCredentials(email, password);
+
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+
+    return res.status(200).send({
+      message: "Login successful",
+      token,
+      userId: user._id,
+    });
+  } catch (err) {
+    return res.status(401).send({ message: err.message });
+  }
+};
+
+const getCurrentUser = (req, res, next) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
     .then((user) => {
       if (!user) {
         const notFound = new Error("User not found");
-        notFound.name = "NotFoundError";
         notFound.statusCode = 404;
         return next(notFound);
       }
       return res.status(200).send(user);
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
-module.exports = { getUsers, createUser, getUser };
+module.exports = {
+  getUsers,
+  createUser,
+  login,
+  getCurrentUser,
+};

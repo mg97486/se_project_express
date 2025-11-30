@@ -30,3 +30,8 @@ The frontend (React-based) communicates with this API to display personalized re
 | Validation            | celebrate / Joi                               |
 | Error Handling        | Custom middleware                             |
 | Hosting               | (e.g., Render / Vercel / Railway / Localhost) |
+
+## Project Pitch Video
+
+check out this video https://drive.google.com/file/d/19tYMxV_ROPw5E9VuGuAIgL05f5Kxau48/view?usp=drive_link where I describe my
+project and some challenges I faced while building it.
