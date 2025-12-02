@@ -2,9 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
-const { errorHandler } = require("./utils/errors");
+const { errorHandler, NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middlewares/auth");
+const { getCurrentUser } = require("./controllers/users");
+const { NOT_FOUND } = require("./utils/constants");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -36,7 +38,7 @@ app.use(auth);
 app.use("/", mainRouter);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Requested resource not found" });
+  res.status(NOT_FOUND).json({ message: "Requested resource not found" });
 });
 
 app.use(errorHandler);

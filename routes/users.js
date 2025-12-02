@@ -4,6 +4,6 @@ const { getCurrentUser } = require("../controllers/users");
 
 router.use(auth);
 
-router.get("/users/me", getCurrentUser);
+router.get("/me", getCurrentUser);
 
 module.exports = router;

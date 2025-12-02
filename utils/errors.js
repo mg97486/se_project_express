@@ -5,6 +5,9 @@ const ForbiddenError = require("./errors/ForbiddenError");
 
 const INTERNAL_SERVER_ERROR_CODE = 500;
 const STATUS_CODE_BAD_REQUEST = 400;
+const UNAUTHORIZED_CODE = 401;
+const STATUS_CODE_NOT_FOUND = 404;
+const CONFLICT_CODE = 409;
 
 function errorHandler(err, req, res, _next) {
   if (err && err.statusCode) {

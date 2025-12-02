@@ -2,14 +2,14 @@ const router = require("express").Router();
 const {
   createItem,
   getItems,
-  getItem,
   deleteItem,
   likeItem,
   unlikeItem,
 } = require("../controllers/clothingitems");
 
 router.get("/", getItems);
-router.get("/:id", getItem);
+
+router.use(auth);
 
 router.post("/", createItem);
 

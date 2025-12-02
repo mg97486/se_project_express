@@ -2,6 +2,7 @@ const validator = require("validator");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const InternalServerError = require("../utils/errors/InternalServerError");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
 
@@ -18,14 +19,12 @@ const createUser = async (req, res) => {
     const { email, password, name, avatar } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required." });
+      return next(new BadRequestError("Email and password required."));
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       email,
-      password: hashedPassword,
+      password,
       name,
       avatar,
     });
@@ -56,7 +55,7 @@ const login = async (req, res) => {
       userId: user._id,
     });
   } catch (err) {
-    return res.status(401).send({ message: err.message });
+    return next(new InternalServerError("Invalid email or password"));
   }
 };
 
@@ -76,7 +75,6 @@ const getCurrentUser = (req, res, next) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   login,
   getCurrentUser,
