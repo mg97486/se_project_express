@@ -5,8 +5,7 @@ const mainRouter = require("./routes/index");
 const { errorHandler, NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middlewares/auth");
-const { getCurrentUser } = require("./controllers/users");
-const { NOT_FOUND } = require("./utils/constants");
+const { NOT_FOUND } = require("./utils/errors/NotFoundError");
 
 const app = express();
 const { PORT = 3001 } = process.env;
