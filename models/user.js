@@ -12,7 +12,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: (v) => validator.isURL(v),
+      validator: function isUrl(v) {
+        return validator.isURL(v);
+      },
       message: "Invalid URL format",
     },
     default: "https://default-avatar.com/image.png",
@@ -22,7 +24,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (v) => validator.isEmail(v),
+      validator: function isEmail(v) {
+        return validator.isEmail(v);
+      },
       message: "Invalid email format",
     },
   },
@@ -35,26 +39,31 @@ const userSchema = new mongoose.Schema({
 });
 
 // LOGIN
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email })
-    .select("+password")
-    .then((user) => {
-      if (!user) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
+  const userFound = (user) => {
+    if (!user) {
+      return Promise.reject(new Error("Incorrect email or password"));
+    }
+
+    const passwordChecked = (matched) => {
+      if (!matched) {
         return Promise.reject(new Error("Incorrect email or password"));
       }
 
-      return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched) {
-          return Promise.reject(new Error("Incorrect email or password"));
-        }
+      return user;
+    };
 
-        return user;
-      });
-    });
+    return bcrypt.compare(password, user.password).then(passwordChecked);
+  };
+
+  return this.findOne({ email }).select("+password").then(userFound);
 };
 
 // HASH PASSWORD BEFORE SAVE
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function hashPassword(next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }

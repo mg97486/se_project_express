@@ -3,7 +3,7 @@ const validator = require("validator");
 
 const clothingItemSchema = new mongoose.Schema({
   name: {
-    minglength: 2,
+    minlength: 2,
     maxlength: 30,
     type: String,
     required: true,
@@ -17,7 +17,9 @@ const clothingItemSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isURL(v),
+      validator: function isUrl(v) {
+        return validator.isURL(v);
+      },
       message: "Invalid URL format",
     },
   },

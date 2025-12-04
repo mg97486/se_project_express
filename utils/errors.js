@@ -5,10 +5,8 @@ const ForbiddenError = require("./errors/ForbiddenError");
 
 const INTERNAL_SERVER_ERROR_CODE = 500;
 const STATUS_CODE_BAD_REQUEST = 400;
-const UNAUTHORIZED_CODE = 401;
-const STATUS_CODE_NOT_FOUND = 404;
-const CONFLICT_CODE = 409;
 
+/* eslint-disable-next-line no-unused-vars */
 function errorHandler(err, req, res, _next) {
   if (err && err.statusCode) {
     const message =

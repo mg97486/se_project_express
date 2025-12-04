@@ -1,20 +1,11 @@
-const validator = require("validator");
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const InternalServerError = require("../utils/errors/InternalServerError");
+const BadRequestError = require("../utils/errors/BadRequestError");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
 
-// GET ALL USERS
-const getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch(next);
-};
-
-// CREATE USER (only email + password required)
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const { email, password, name, avatar } = req.body;
 
@@ -29,19 +20,22 @@ const createUser = async (req, res) => {
       avatar,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "User created",
       userId: user._id,
     });
   } catch (error) {
-    if (error.code === 11000) {
+    // Duplicate key error (email already exists)
+    if (error && error.code === 11000) {
       return res.status(409).json({ message: "Email already exists." });
     }
-    res.status(500).json({ message: "Server error" });
+
+    // Forward other errors to centralized error handler
+    return next(new InternalServerError(error.message || "Server error"));
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
