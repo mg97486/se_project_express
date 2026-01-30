@@ -34,8 +34,6 @@ app.use((req, res, next) => {
 app.post("/signup", createUser);
 app.post("/signin", login);
 
-app.use(auth);
-
 app.use("/", mainRouter);
 
 app.use((req, res) => {
