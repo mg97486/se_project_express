@@ -4,6 +4,7 @@ const InternalServerError = require("../utils/errors/InternalServerError");
 const BadRequestError = require("../utils/errors/BadRequestError");
 
 const { JWT_SECRET = "dev-secret" } = process.env;
+const NotFoundError = require("../utils/errors/NotFoundError");
 
 const createUser = async (req, res, next) => {
   try {
@@ -68,8 +69,33 @@ const getCurrentUser = (req, res, next) => {
     .catch(next);
 };
 
+const updateUser = (req, res, next) => {
+  const { name, avatar } = req.body;
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((user) => {
+      if (!user) {
+        return next(new NotFoundError("User not found"));
+      }
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      if (err && err.name === "ValidationError") {
+        const BadRequestError = require("../utils/errors/BadRequestError");
+        return next(new BadRequestError(err.message));
+      }
+      return next(err);
+    });
+};
+
 module.exports = {
   createUser,
   login,
   getCurrentUser,
+  updateUser,
 };

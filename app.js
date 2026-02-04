@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { errorHandler } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
@@ -39,6 +40,8 @@ app.use("/", mainRouter);
 app.use((req, res) => {
   res.status(NOT_FOUND).json({ message: "Requested resource not found" });
 });
+
+app.use(errors());
 
 app.use(errorHandler);
 
