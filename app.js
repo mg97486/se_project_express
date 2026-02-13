@@ -5,10 +5,12 @@ const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { errorHandler } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 const auth = require("./middlewares/auth");
 const { NOT_FOUND } = require("./utils/errors/NotFoundError");
 
 const app = express();
+const routes = express.Router();
 const { PORT = 3001 } = process.env;
 
 app.use(cors());
@@ -43,6 +45,14 @@ app.use((req, res) => {
 
 app.use(errors());
 
+app.use(errorHandler);
+
+app.use(requestLogger);
+app.use(routes);
+
+app.use(errorLogger);
+
+app.use(errors());
 app.use(errorHandler);
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
