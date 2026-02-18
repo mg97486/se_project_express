@@ -55,6 +55,8 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
+require("dotenv").config();
+
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 if (require.main === module) {
