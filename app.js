@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -34,8 +35,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/signup", createUser);
 app.post("/signin", login);
+app.post("/signup", createUser);
 
 app.use("/", mainRouter);
 
@@ -54,8 +55,6 @@ app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
-
-require("dotenv").config();
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
