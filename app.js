@@ -7,59 +7,46 @@ const mainRouter = require("./routes/index");
 const { errorHandler } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const auth = require("./middlewares/auth");
-const { NOT_FOUND } = require("./utils/errors/NotFoundError");
+// const auth = require("./middlewares/auth"); // Keep this here to use in mainRouter or here
 
 const app = express();
-const routes = express.Router();
 const { PORT = 3001 } = process.env;
+
+// 1. Request Logger goes FIRST
+app.use(requestLogger);
 
 app.use(cors());
 app.use(express.json());
 
-// GLOBAL HTML ERROR INTERCEPTOR
-app.use((req, res, next) => {
-  const origSend = res.send.bind(res);
-  res.send = function sendOverride(body) {
-    try {
-      if (res.statusCode >= 400 && typeof body === "string") {
-        if (body.trim().startsWith("<")) {
-          return res.json({ message: "An error occurred on the server" });
-        }
-      }
-    } catch (e) {
-      // swallow any unexpected error while overriding send
-    }
-    return origSend(body);
-  };
-  next();
-});
-
+// 2. Public Routes (No Auth required)
 app.post("/signin", login);
 app.post("/signup", createUser);
 
+// 3. The Main Router
+// Ensure that inside routes/index.js, you are using the auth middleware
+// for protected routes like /users/me
 app.use("/", mainRouter);
 
+// 4. 404 Handler (Must be after all valid routes)
 app.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Requested resource not found" });
+  res.status(404).json({ message: "Requested resource not found" });
 });
 
-app.use(errors());
-
-app.use(errorHandler);
-
-app.use(requestLogger);
-app.use(routes);
-
+// 5. Error Logger (Must be after routes, before handlers)
 app.use(errorLogger);
 
+// 6. Celebrate error handler
 app.use(errors());
+
+// 7. Centralized Error Handler (Must be LAST)
 app.use(errorHandler);
 
-mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
+mongoose
+  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .then(() => console.log("Connected to DB"))
+  .catch((err) => console.log("DB Connection Error:", err));
 
 if (require.main === module) {
-  /* eslint-disable-next-line no-console */
   app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 }
 
