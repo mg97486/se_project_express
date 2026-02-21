@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const { JWT_SECRET } = require("../utils/config");
 const InternalServerError = require("../utils/errors/InternalServerError");
 const BadRequestError = require("../utils/errors/BadRequestError");
 
-const { JWT_SECRET = "dev-secret" } = process.env;
 const NotFoundError = require("../utils/errors/NotFoundError");
 
 const createUser = async (req, res, next) => {
@@ -47,7 +47,12 @@ const login = async (req, res, next) => {
     return res.status(200).send({
       message: "Login successful",
       token,
-      userId: user._id,
+      user: {
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      },
     });
   } catch (err) {
     return next(new InternalServerError("Invalid email or password"));
