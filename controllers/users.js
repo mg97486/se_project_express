@@ -23,7 +23,7 @@ const createUser = async (req, res, next) => {
 
     return res.status(201).json({
       message: "User created",
-      userId: user._id,
+      _id: user._id,
     });
   } catch (error) {
     // Duplicate key error (email already exists)
