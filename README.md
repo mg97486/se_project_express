@@ -33,5 +33,5 @@ The frontend (React-based) communicates with this API to display personalized re
 
 ## Project Pitch Video
 
-check out this video https://drive.google.com/file/d/19tYMxV_ROPw5E9VuGuAIgL05f5Kxau48/view?usp=drive_link where I describe my
+check out this videohttps://drive.google.com/file/d/12G-jV9ycRkOCmb_8uhxN7tFpF6d2YeRU/view?usp=sharing where I describe my
 project and some challenges I faced while building it.
