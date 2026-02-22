@@ -31,6 +31,14 @@ The frontend (React-based) communicates with this API to display personalized re
 | Error Handling        | Custom middleware                             |
 | Hosting               | (e.g., Render / Vercel / Railway / Localhost) |
 
+## Deployment link
+
+https://www.wtwr.webs.vc/
+
+## Frontend repository
+
+https://github.com/mg97486/se_project_react.git
+
 ## Project Pitch Video
 
 check out this videohttps://drive.google.com/file/d/12G-jV9ycRkOCmb_8uhxN7tFpF6d2YeRU/view?usp=sharing where I describe my
