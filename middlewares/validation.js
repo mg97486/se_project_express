@@ -11,17 +11,22 @@ const validateURL = (value, helpers) => {
 module.exports.validateUserItem = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    about: Joi.string().min(2).max(30).required(),
     avatar: Joi.string().custom(validateURL).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
   }),
 });
 
+module.exports.validateUpdateUser = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    avatar: Joi.string().custom(validateURL),
+  }),
+});
+
 module.exports.validateNewUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(validateURL),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),

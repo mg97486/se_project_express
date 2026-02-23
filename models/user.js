@@ -8,9 +8,11 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
     default: "Anonymous",
+    required: true,
   },
   avatar: {
     type: String,
+    required: true,
     validate: {
       validator: function isUrl(v) {
         return validator.isURL(v);

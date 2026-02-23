@@ -3,7 +3,6 @@ const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const InternalServerError = require("../utils/errors/InternalServerError");
 const BadRequestError = require("../utils/errors/BadRequestError");
-
 const NotFoundError = require("../utils/errors/NotFoundError");
 
 const createUser = async (req, res, next) => {
@@ -91,7 +90,6 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err && err.name === "ValidationError") {
-        const BadRequestError = require("../utils/errors/BadRequestError");
         return next(new BadRequestError(err.message));
       }
       return next(err);

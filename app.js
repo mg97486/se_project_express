@@ -5,7 +5,6 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { errorHandler } = require("./utils/errors");
-const { login, createUser } = require("./controllers/users");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
@@ -22,14 +21,7 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-app.post("/signin", login);
-app.post("/signup", createUser);
-
 app.use("/", mainRouter);
-
-app.use((req, res) => {
-  res.status(404).json({ message: "Requested resource not found" });
-});
 
 app.use(errorLogger);
 

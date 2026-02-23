@@ -15,9 +15,8 @@ module.exports = (req, res, next) => {
     const payload = jwt.verify(token, JWT_SECRET);
 
     req.user = payload;
-
     return next();
-  } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+  } catch (err) {
+    return next(new UnauthorizedError("Invalid or expired token"));
   }
 };
