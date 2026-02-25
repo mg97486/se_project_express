@@ -7,8 +7,11 @@ const {
   validateCreateUser,
 } = require("../middlewares/validation");
 
-router.use("/signin", validateLogin, login);
-router.use("/signup", validateCreateUser, createUser);
+router.post("/signin", validateLogin, login);
+router.post("/signup", validateCreateUser, createUser);
+
+router.use("/users", userRouter);
+
 router.use((req, res, next) => {
   next(new NotFoundError("Requested resource not found"));
 });
