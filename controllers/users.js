@@ -4,6 +4,7 @@ const { JWT_SECRET } = require("../utils/config");
 const InternalServerError = require("../utils/errors/InternalServerError");
 const BadRequestError = require("../utils/errors/BadRequestError");
 const NotFoundError = require("../utils/errors/NotFoundError");
+const ConflictError = require("../utils/errors/ConflictError");
 
 const createUser = async (req, res, next) => {
   try {
@@ -22,13 +23,10 @@ const createUser = async (req, res, next) => {
     const userObj = user.toObject();
     delete userObj.password;
 
-    return res.status(201).json({
-      message: "User created",
-      _id: user._id,
-    });
+    return res.status(201).send(userObj);
   } catch (err) {
     if (err.code === 11000) {
-      return next(new BadRequestError("Email already exists."));
+      return next(new ConflictError("Email already exists."));
     }
     return next(
       new InternalServerError("An error occurred while creating the user.")
