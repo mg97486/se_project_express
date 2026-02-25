@@ -19,19 +19,20 @@ const createUser = async (req, res, next) => {
       name,
       avatar,
     });
+    const userObj = user.toObject();
+    delete userObj.password;
 
     return res.status(201).json({
       message: "User created",
       _id: user._id,
     });
-  } catch (error) {
-    // Duplicate key error (email already exists)
-    if (error && error.code === 11000) {
-      return res.status(409).json({ message: "Email already exists." });
+  } catch (err) {
+    if (err.code === 11000) {
+      return next(new BadRequestError("Email already exists."));
     }
-
-    // Forward other errors to centralized error handler
-    return next(new InternalServerError(error.message || "Server error"));
+    return next(
+      new InternalServerError("An error occurred while creating the user.")
+    );
   }
 };
 
@@ -54,7 +55,10 @@ const login = async (req, res, next) => {
       },
     });
   } catch (err) {
-    return next(new InternalServerError("Invalid email or password"));
+    if (err.message === "Invalid email or password") {
+      return next(new BadRequestError("Invalid email or password"));
+    }
+    return next(new InternalServerError("An error occurred during login."));
   }
 };
 
@@ -90,7 +94,7 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err && err.name === "ValidationError") {
-        return next(new BadRequestError(err.message));
+        return next(new BadRequestError("Invalid data"));
       }
       return next(err);
     });

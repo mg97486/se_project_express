@@ -7,7 +7,7 @@ const {
   ForbiddenError,
 } = require("../utils/errors");
 
-const createItem = (req, res, next) => {
+const createClothingItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user?._id;
 
@@ -131,7 +131,7 @@ const getItem = (req, res, next) => {
 };
 
 module.exports = {
-  createItem,
+  createClothingItem,
   getItems,
 
   deleteItem,
